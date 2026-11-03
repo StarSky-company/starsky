@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>StarSky</title>
+  
+  <!-- Иконка во вкладке браузера -->
+  <link rel="icon" type="image/png" href="logo.png">
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: #0b0c10;
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Сеточный фон и свечение */
+    body::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      z-index: -2;
+    }
+
+    .glow {
+      position: absolute;
+      top: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(138, 43, 226, 0.25) 0%, rgba(0, 0, 0, 0) 70%);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Навигация */
+    header {
+      width: 100%;
+      max-width: 1100px;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    nav {
+      background: rgba(18, 19, 26, 0.8);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 25px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 900;
+      font-size: 18px;
+      letter-spacing: 2px;
+      margin-right: 15px;
+    }
+
+    .logo-img {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: #a0a5b5;
+      text-decoration: none;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: color 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .nav-links a:hover {
+      color: #ffffff;
+    }
+
+    /* Главная секция */
+    main {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 100px;
+      text-align: center;
+      padding: 0 20px;
+      width: 100%;
+    }
+
+    .hero-title {
+      font-size: 96px;
+      font-weight: 900;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .hero-title span.white {
+      color: #ffffff;
+    }
+
+    .hero-title span.blue {
+      color: #4895ef;
+    }
+
+    /* Секция с кнопкой */
+    .cta-container {
+      margin-top: 50px;
+    }
+
+    .btn-tg {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: #7c3aed;
+      color: #ffffff;
+      font-size: 16px;
+      font-weight: 700;
+      padding: 16px 36px;
+      border-radius: 14px;
+      text-decoration: none;
+      box-shadow: 0 0 25px rgba(124, 58, 237, 0.5);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    }
+
+    .btn-tg:hover {
+      transform: translateY(-2px);
+      background: #6d28d9;
+      box-shadow: 0 0 35px rgba(124, 58, 237, 0.7);
+    }
+
+    /* Секции "О проекте" и "Установка" */
+    .content-section {
+      max-width: 800px;
+      width: 100%;
+      margin: 60px 20px 0 20px;
+      padding: 30px 40px;
+      background: rgba(18, 19, 26, 0.6);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      text-align: center;
+      scroll-margin-top: 100px;
+    }
+
+    .content-section h2 {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 20px;
+      color: #ffffff;
+      letter-spacing: 1px;
+    }
+
+    .content-section p {
+      font-size: 18px;
+      line-height: 1.6;
+      color: #a0a5b5;
+    }
+
+    /* Шаги установки */
+    .install-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-align: left;
+      margin-top: 10px;
+    }
+
+    .step-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 16px 20px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .step-number {
+      background: #7c3aed;
+      color: #ffffff;
+      font-weight: 800;
+      min-width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    .step-text {
+      color: #a0a5b5;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .step-text strong {
+      color: #ffffff;
+    }
+
+    /* Секция "Галерея" */
+    .gallery-section {
+      max-width: 1000px;
+      margin: 60px 20px 100px 20px;
+      width: 100%;
+      text-align: center;
+      scroll-margin-top: 100px;
+    }
+
+    .gallery-section h2 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 30px;
+      color: #ffffff;
+      letter-spacing: 1px;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 20px;
+      padding: 0 10px;
+    }
+
+    .gallery-item {
+      overflow: hidden;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(18, 19, 26, 0.6);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      transition: transform 0.3s ease, border-color 0.3s ease;
+      cursor: pointer;
+    }
+
+    .gallery-item:hover {
+      transform: translateY(-5px);
+      border-color: rgba(124, 58, 237, 0.5);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 230px;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Модальное окно просмотра картинок */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal img {
+      max-width: 90%;
+      max-height: 85vh;
+      border-radius: 12px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 20px;
+      right: 25px;
+      color: #ffffff;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      background: rgba(255, 255, 255, 0.1);
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .modal-close:hover {
+      background: #7c3aed;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body id="top">
+
+  <div class="glow"></div>
+
+  <header>
+    <nav>
+      <div class="logo">
+        <img src="logo.png" alt="StarSky Logo" class="logo-img">
+        StarSky
+      </div>
+      <ul class="nav-links">
+        <li><a href="#top">⌂ ГЛАВНАЯ</a></li>
+        <li><a href="#about">⚙ О ПРОЕКТЕ</a></li>
+        <li><a href="#install">⤓ УСТАНОВКА</a></li>
+        <li><a href="#gallery">🖼 ГАЛЕРЕЯ</a></li>
+        <li><a href="https://t.me/StarSkyOffical" target="_blank">⩥ TELEGRAM</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <h1 class="hero-title">
+      <span class="white">StarSky</span>
+      <span class="blue">Client</span>
+    </h1>
+
+    <div class="cta-container">
+      <a href="https://t.me/StarSkyOffical" target="_blank" class="btn-tg">
+        ⩥ Скачать Клиент (ТГ)
+      </a>
+    </div>
+
+    <!-- Блок "О проекте" -->
+    <section id="about" class="content-section">
+      <h2>О проекте</h2>
+      <p>
+        <strong>StarSky Client</strong> — это лудший чит-клиент для версии Minecraft 1.16.5. Также этот клиент легко кастомизируется под каждого игрока. И еще если вы играете на таких анархиях FunTime или копия сервера то тогда для вас есть много хороших функций.
+      </p>
+    </section>
+
+    <!-- Блок "Установка" -->
+    <section id="install" class="content-section">
+      <h2>Установка</h2>
+      <div class="install-steps">
+        <div class="step-item">
+          <div class="step-number">1</div>
+          <div class="step-text">Перейдите в наш <strong>Telegram-канал</strong> и скачайте Setup файл.</div>
+        </div>
+        <div class="step-item">
+          <div class="step-number">2</div>
+          <div class="step-text">Запустите файл и <strong>начните установку</strong>.</div>
+        </div>
+        <div class="step-item">
+          <div class="step-number">3</div>
+          <div class="step-text">Запустите лаунчер <strong>и наслаждайтесь игрой</strong>.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Блок "Галерея" -->
+    <section id="gallery" class="gallery-section">
+      <h2>Галерея</h2>
+      <div class="gallery-grid">
+        <div class="gallery-item" onclick="openModal('img1.jpg')">
+          <img src="img1.jpg" alt="Главное меню StarSky">
+        </div>
+        <div class="gallery-item" onclick="openModal('img2.png')">
+          <img src="img2.png" alt="Сетевая игра">
+        </div>
+        <div class="gallery-item" onclick="openModal('img3.jpg')">
+          <img src="img3.jpg" alt="Меню модулей ClickGUI">
+        </div>
+        <div class="gallery-item" onclick="openModal('img4.jpg')">
+          <img src="img4.jpg" alt="Игровой процесс">
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Всплывающее окно -->
+  <div id="imageModal" class="modal" onclick="closeModal()">
+    <span class="modal-close">&times;</span>
+    <img id="modalImg" src="" alt="Увеличенное изображение">
+  </div>
+
+  <script>
+    function openModal(src) {
+      document.getElementById('modalImg').src = src;
+      document.getElementById('imageModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('imageModal').style.display = 'none';
+    }
+  </script>
+
+</body>
+</html>
